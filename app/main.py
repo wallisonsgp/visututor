@@ -108,7 +108,7 @@ def uploadprocessing():
         file = request.files['fileInput']
         # Aqui você pode processar o arquivo, salvar em um local, etc.
         # Exemplo de salvamento do arquivo no diretório atual:
-        file.save(file.filename)
+        file.save('files_upload/'+file.filename)
         return render_template('upload.html', message='Arquivo enviado com sucesso!')
     else:
         return render_template('upload.html', message='Nenhum arquivo selecionado.')

@@ -403,10 +403,37 @@
                                         </div>
                                         {% endif %}
                                         <form action="/uploadprocessing" method="POST" enctype="multipart/form-data">
-                                            <div class="form-group">
-                                                <label for="fileInput">Selecione um arquivo:</label>
-                                                <input type="file" class="form-control-file" id="fileInput" name="fileInput" required>
+                                            <div id="fileDropArea" class="file-drop-area">
+                                                <div class="file-drop-icon">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <span>Arraste e solte o arquivo aqui ou</span>
+                                                </div>
+                                                <div class="file-drop-button">
+                                                    <input type="file" id="fileInput" name="fileInput" class="file-input" required>
+                                                    <label for="fileInput" class="btn btn-primary">Selecione um arquivo</label>
+                                                </div>
                                             </div>
+                                            <script>
+                                                const fileDropArea = document.getElementById('fileDropArea');
+                                
+                                                fileDropArea.addEventListener('dragover', (e) => {
+                                                    e.preventDefault();
+                                                    fileDropArea.classList.add('file-drop-over');
+                                                });
+                                
+                                                fileDropArea.addEventListener('dragleave', (e) => {
+                                                    e.preventDefault();
+                                                    fileDropArea.classList.remove('file-drop-over');
+                                                });
+                                
+                                                fileDropArea.addEventListener('drop', (e) => {
+                                                    e.preventDefault();
+                                                    fileDropArea.classList.remove('file-drop-over');
+                                
+                                                    const fileInput = document.getElementById('fileInput');
+                                                    fileInput.files = e.dataTransfer.files;
+                                                });
+                                            </script>
                                             <button type="submit" class="btn btn-primary col-sm-3">Enviar</button>
                                         </form>
                                     </div>
