@@ -388,24 +388,24 @@
                     <div class="row">
 
                         <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-                    
+                        <div class="col-lg-10 mb-4">
+                            
                             <!-- Project Card Example -->
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
                                     <h6 class="m-0 font-weight-bold text-primary">Arquivos Salvos</h6>
                                 </div>
-                                <div class="card-body">
-                                    <div class="list-group">
-                                        <a href="#" class="list-group-item list-group-item-action active">
-                                          Cras justo odio
-                                        </a>
-                                        <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-                                        <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
-                                        <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-                                        <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
-                                      </div>
-                                </div>
+                                <div class="container">
+                                    <ul class="list-group">
+                                      {% for pasta in estrutura_pasta %}
+                                        <li class="list-group-item">
+                                          <i class="fas fa-folder"></i>
+                                          {{ pasta }}
+                                        </li>
+                                      {% endfor %}
+                                    </ul>
+                                  </div>
+                                  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
                             </div>
                     
                         </div>

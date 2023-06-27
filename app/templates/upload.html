@@ -388,7 +388,7 @@
                     <div class="row">
 
                         <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
+                        <div class="col-lg-8 mb-4">
                     
                             <!-- Project Card Example -->
                             <div class="card shadow mb-4">
@@ -403,49 +403,138 @@
                                         </div>
                                         {% endif %}
                                         <form action="/uploadprocessing" method="POST" enctype="multipart/form-data">
-                                            <div id="fileDropArea" class="file-drop-area">
-                                                <div class="file-drop-icon">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <span>Arraste e solte o arquivo aqui ou</span>
-                                                </div>
-                                                <div class="file-drop-button">
-                                                    <input type="file" id="fileInput" name="fileInput" class="file-input" required>
-                                                    <label for="fileInput" class="btn btn-primary">Selecione um arquivo</label>
+                                            <div class="form-group">
+                                                <label for="categoriaInput">Categoria:</label>
+                                                <input type="text" class="form-control" id="categoriaInput" name="categoriaInput" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" id="fileInput" name="fileInput" required>
+                                                    <label class="custom-file-label" for="fileInput">Arraste e solte o arquivo ou clique aqui para enviar</label>
                                                 </div>
                                             </div>
-                                            <script>
-                                                const fileDropArea = document.getElementById('fileDropArea');
-                                
-                                                fileDropArea.addEventListener('dragover', (e) => {
-                                                    e.preventDefault();
-                                                    fileDropArea.classList.add('file-drop-over');
-                                                });
-                                
-                                                fileDropArea.addEventListener('dragleave', (e) => {
-                                                    e.preventDefault();
-                                                    fileDropArea.classList.remove('file-drop-over');
-                                                });
-                                
-                                                fileDropArea.addEventListener('drop', (e) => {
-                                                    e.preventDefault();
-                                                    fileDropArea.classList.remove('file-drop-over');
-                                
-                                                    const fileInput = document.getElementById('fileInput');
-                                                    fileInput.files = e.dataTransfer.files;
-                                                });
-                                            </script>
+                                            <div class="progress mb-3" style="display: none;">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
                                             <button type="submit" class="btn btn-primary col-sm-3">Enviar</button>
                                         </form>
                                     </div>
-                                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
                                 </div>
                             </div>
-                          
-                    
+                            
+                            <script>
+                                const fileInput = document.getElementById('fileInput');
+                                const customFileLabel = document.querySelector('.custom-file-label');
+                                const progress = document.querySelector('.progress');
+                                const progressBar = progress.querySelector('.progress-bar');
+                            
+                                fileInput.addEventListener('change', (e) => {
+                                    const fileName = e.target.files[0].name;
+                                    customFileLabel.textContent = fileName;
+                                });
+                            
+                                fileInput.addEventListener('dragover', (e) => {
+                                    e.preventDefault();
+                                    fileInput.classList.add('is-dragover');
+                                });
+                            
+                                fileInput.addEventListener('dragleave', (e) => {
+                                    e.preventDefault();
+                                    fileInput.classList.remove('is-dragover');
+                                });
+                            
+                                fileInput.addEventListener('drop', (e) => {
+                                    e.preventDefault();
+                                    fileInput.classList.remove('is-dragover');
+                                    fileInput.files = e.dataTransfer.files;
+                                    const fileName = e.dataTransfer.files[0].name;
+                                    customFileLabel.textContent = fileName;
+                                });
+                            
+                                document.querySelector('form').addEventListener('submit', (e) => {
+                                    e.preventDefault();
+                                    const formData = new FormData();
+                                    formData.append('fileInput', fileInput.files[0]);
+                                    formData.append('categoriaInput', document.getElementById('categoriaInput').value);
+                            
+                                    const xhr = new XMLHttpRequest();
+                                    xhr.open('POST', '/uploadprocessing');
+                            
+                                    xhr.upload.addEventListener('progress', (e) => {
+                                        const progressPercentage = Math.round((e.loaded / e.total) * 100);
+                                        progressBar.style.width = `${progressPercentage}%`;
+                                        progressBar.setAttribute('aria-valuenow', progressPercentage);
+                                    });
+                            
+                                    xhr.addEventListener('load', () => {
+                                        progress.style.display = 'none';
+                                        if (xhr.status === 200) {
+                                            customFileLabel.textContent = 'Arquivo enviado com sucesso!';
+                                            customFileLabel.classList.add('text-success');
+                                        } else {
+                                            customFileLabel.textContent = 'Erro ao enviar o arquivo.';
+                                            customFileLabel.classList.add('text-danger');
+                                        }
+                                    });
+                            
+                                    xhr.addEventListener('error', () => {
+                                        progress.style.display = 'none';
+                                        customFileLabel.textContent = 'Erro ao enviar o arquivo.';
+                                        customFileLabel.classList.add('text-danger');
+                                    });
+                            
+                                    progress.style.display = 'block';
+                                    xhr.send(formData);
+                                });
+                            </script>
                         </div>
                     </div>
+                    <!-- Content Row -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Arquivos Salvos</h6>
+                        </div>
+                        <div class="container">
+                            {% if messageexcluir %}
+                            <div class="alert alert-info" role="alert">
+                                {{ messageexcluir }}
+                            </div>
+                            {% endif %}
+                            <ul class="list-group">
+                                {% for arquivo in estrutura_pasta %}
+                                <li class="list-group-item">
+                                    <i class="fas fa-file"></i>
+                                    {{ arquivo }}
+                                    <button class="btn btn-danger btn-sm float-right" onclick="excluirArquivo('{{ arquivo }}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+                    </div>
                     
-
+                    <script>
+                        function excluirArquivo(nomeArquivo) {
+                            const formData = new FormData();
+                            formData.append('nome_arquivo', nomeArquivo);
+                    
+                            fetch('/excluirarquivo', {
+                                method: 'POST',
+                                body: formData
+                            })
+                            .then(response => response.text())
+                            .then(message => {
+                                console.log(message); // Exibir a mensagem no console
+                                // Aqui você pode adicionar lógica para atualizar a interface ou exibir uma mensagem de confirmação
+                            })
+                            .catch(error => {
+                                console.error(error); // Exibir o erro no console
+                                // Aqui você pode adicionar lógica para tratar o erro, se necessário
+                            });
+                        }
+                    </script>
                 </div>
                 <!-- /.container-fluid -->
 

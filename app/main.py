@@ -1,7 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'files_upload'
 app.secret_key = 'sua_chave_secreta'  # Defina sua própria chave secreta
 
 # Configuração do Flask-Login
@@ -12,6 +15,17 @@ login_manager.login_view = 'login'
 # Dados de exemplo para autenticação
 users = {'admin@asdf.com': {'password': 'admin123'}}
 
+
+def obter_estrutura_pasta(caminho):
+    estrutura_pasta = []
+    for raiz, pastas, arquivos in os.walk(caminho):
+        # # Adiciona as pastas ao resultado
+        # for pasta in pastas:
+        #     estrutura_pasta.append(os.path.join(raiz, pasta))
+        # Adiciona os arquivos ao resultado
+        for arquivo in arquivos:
+            estrutura_pasta.append(os.path.join(raiz, arquivo))
+    return estrutura_pasta
 
 # Classe de exemplo para representar um usuário
 class User(UserMixin):
@@ -92,26 +106,54 @@ def profile():
 @app.route('/files')
 @login_required
 def files():
+    
     return render_template('files.html')
 
 
 @app.route('/upload')
 @login_required
 def upload():
-    return render_template('upload.html')
+    estrutura_pasta = obter_estrutura_pasta(app.config['UPLOAD_FOLDER'])
+    return render_template('upload.html', estrutura_pasta=estrutura_pasta)
 
+import os
+
+@app.route('/excluirarquivo', methods=['POST'])
+@login_required
+def excluir_arquivo():
+    nome_arquivo = request.form['nome_arquivo']
+    nome_arquivo = '/Users/guimaraes/Workspace/private-projects/visututor/app/'+nome_arquivo
+    caminho_arquivo = os.path.join('caminho', nome_arquivo)  # Substitua 'caminho' pelo caminho real da pasta onde os arquivos estão salvos
+    
+    if os.path.exists(caminho_arquivo):
+        os.remove(caminho_arquivo)
+        return 'Arquivo excluído com sucesso!'
+    else:
+        return 'Arquivo não encontrado.'
+        
 
 @app.route('/uploadprocessing', methods=['POST'])
 @login_required
 def uploadprocessing():
+    estrutura_pasta = obter_estrutura_pasta(app.config['UPLOAD_FOLDER'])
     if 'fileInput' in request.files:
         file = request.files['fileInput']
-        # Aqui você pode processar o arquivo, salvar em um local, etc.
-        # Exemplo de salvamento do arquivo no diretório atual:
-        file.save('files_upload/'+file.filename)
-        return render_template('upload.html', message='Arquivo enviado com sucesso!')
+        categoria = request.form['categoriaInput']
+
+        # Verificar se o diretório da categoria já existe, caso contrário, criar
+        diretorio_categoria = os.path.join(app.config['UPLOAD_FOLDER'], categoria)
+        if not os.path.exists(diretorio_categoria):
+            os.makedirs(diretorio_categoria)
+
+        # Salvar o arquivo no diretório da categoria
+        arquivo_path = os.path.join(diretorio_categoria, file.filename)
+        file.save(arquivo_path)
+        estrutura_pasta = obter_estrutura_pasta(app.config['UPLOAD_FOLDER'])
+        return render_template('upload.html', message='Arquivo enviado com sucesso!', estrutura_pasta=estrutura_pasta)
     else:
-        return render_template('upload.html', message='Nenhum arquivo selecionado.')
+        return render_template('upload.html', message='Nenhum arquivo selecionado.', estrutura_pasta=estrutura_pasta)
+
+
 
     
 @app.route('/register')
