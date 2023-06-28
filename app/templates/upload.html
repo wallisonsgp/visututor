@@ -396,26 +396,37 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="container">
-                                        
                                         <form action="/uploadprocessing" method="POST" enctype="multipart/form-data">
-                                            <div class="form-group">
-                                                <label for="categoriaInput">Categoria:</label>
-                                                <input type="text" class="form-control" id="categoriaInput" name="categoriaInput" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" id="fileInput" name="fileInput" required>
-                                                    <label class="custom-file-label" for="fileInput">Arraste e solte o arquivo ou clique aqui para enviar</label>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-4">
+                                                    <label for="categoriaInput">Categoria:</label>
+                                                    <select class="form-control" id="categoriaInput" name="categoriaInput" required>
+                                                        <option value="">Selecione uma categoria</option>
+                                                        <option value="Categoria 1">Categoria 1</option>
+                                                        <option value="Categoria 2">Categoria 2</option>
+                                                        <option value="Categoria 3">Categoria 3</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-8">
+                                                    <label for="fileInput">Arquivo:</label>
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" id="fileInput" name="fileInput" required>
+                                                        <label class="custom-file-label" for="fileInput">Arraste e solte o arquivo ou clique aqui para enviar</label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="progress mb-3" style="display: none;">
-                                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="form-group">
+                                                <div class="progress mb-3" style="display: none;">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-lg-5"> 
-                                                    <button type="submit" class="btn btn-primary col-sm-5">Enviar</button>
+                                                <div class="col-lg-12">
+                                                    <button type="submit" class="btn btn-primary btn-block">Enviar</button>
                                                 </div>
-                                                <div class="col-lg-7"> 
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-lg-12">
                                                     {% if message %}
                                                     <div class="alert alert-info" role="alert">
                                                         {{ message }}
@@ -427,6 +438,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             
                             <script>
                                 const fileInput = document.getElementById('fileInput');
@@ -501,21 +513,32 @@
                             <h6 class="m-0 font-weight-bold text-primary">Arquivos Salvos</h6>
                         </div>
                         <div class="container">
-                            <ul class="list-group">
-                                {% for arquivo in estrutura_pasta %}
-                                <li class="list-group-item">
-                                    <i class="fas fa-file"></i>
-                                    {{ arquivo }}
-                                    <button class="btn btn-danger btn-sm float-right" onclick="excluirArquivo('{{ arquivo }}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </li>
-                                {% endfor %}
-                            </ul>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="file-list">
+                                        <ul class="list-group">
+                                            {% for arquivo in estrutura_pasta %}
+                                            <li class="list-group-item">
+                                                <div class="row">
+                                                    <div class="col-9">
+                                                        <i class="fas fa-file"></i>
+                                                        {{ arquivo }}
+                                                    </div>
+                                                    <div class="col-3 text-right">
+                                                        <button class="btn btn-danger btn-sm" onclick="excluirArquivo('{{ arquivo }}')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-                    </div>
-                    
+                    </div>                                     
                     <script>
                         function excluirArquivo(nomeArquivo) {
                             const formData = new FormData();
