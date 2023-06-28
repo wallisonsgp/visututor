@@ -63,7 +63,7 @@ def login():
         if username in users and password == users[username]['password']:
             user = User(username)
             login_user(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('chat'))
         else:
             flash('Usuário ou senha inválidos', 'error')
     return render_template('login.html')
@@ -130,7 +130,7 @@ def excluir_arquivo():
         return 'Arquivo excluído com sucesso!'
     else:
         return 'Arquivo não encontrado.'
-        
+
 
 @app.route('/uploadprocessing', methods=['POST'])
 @login_required
