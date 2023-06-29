@@ -525,7 +525,7 @@
                                                         {{ arquivo }}
                                                     </div>
                                                     <div class="col-3 text-right">
-                                                        <button class="btn btn-danger btn-sm" onclick="excluirArquivo('{{ arquivo }}')">
+                                                        <button class="btn btn-danger btn-sm" onclick="confirmarExclusao('{{ arquivo }}')">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </div>
@@ -538,8 +538,15 @@
                             </div>
                         </div>
                         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-                    </div>                                     
+                    </div>
+                    
                     <script>
+                        function confirmarExclusao(nomeArquivo) {
+                            if (confirm('Tem certeza que deseja excluir o arquivo?')) {
+                                excluirArquivo(nomeArquivo);
+                            }
+                        }
+                    
                         function excluirArquivo(nomeArquivo) {
                             const formData = new FormData();
                             formData.append('nome_arquivo', nomeArquivo);
@@ -551,7 +558,7 @@
                             .then(response => response.text())
                             .then(message => {
                                 console.log(message); // Exibir a mensagem no console
-                                // Aqui você pode adicionar lógica para atualizar a interface ou exibir uma mensagem de confirmação
+                                location.reload(); // Atualizar a página
                             })
                             .catch(error => {
                                 console.error(error); // Exibir o erro no console
