@@ -440,7 +440,7 @@
                                                             });
                                     
                                                             recorder.addEventListener('stop', function () {
-                                                                const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+                                                                const audioBlob = new Blob(chunks, { type: 'audio/wav' });
                                                                 const audioURL = URL.createObjectURL(audioBlob);
                                     
                                                                 const messageContainer = document.getElementById('message-container');
@@ -453,7 +453,7 @@
                                     
                                                                 // Enviar o áudio via AJAX
                                                                 const formData = new FormData();
-                                                                formData.append('audio', audioBlob, 'audio.webm');
+                                                                formData.append('audio', audioBlob, 'audio.wav');
                                     
                                                                 fetch('/api/chat', {
                                                                     method: 'POST',
