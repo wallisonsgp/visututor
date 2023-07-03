@@ -34,15 +34,15 @@ audio{
 /*perfil*/
 .gradient-custom {
     /* fallback for old browsers */
-    background: #f6d365;
+    background: #029502;
     
     /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+    background: -webkit-linear-gradient(to right bottom, rgb(56,245,4), rgb(36, 118, 4));
     
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+    background: linear-gradient(to right bottom, rgba(56,245,4), rgba(36, 118, 4   , 1))
     }
-
+    
 .file-list {
     max-height: 200px; /* Ajuste a altura máxima desejada */
     overflow: auto;
