@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  flask-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 5000:5000
+    networks:
+      - my-network
+    depends_on:
+      - mysql
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=your-password
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USER=your-username
+      - MYSQL_PASSWORD=your-password
+      - MYSQL_DATABASE=your-database-name
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: your-root-password
+      MYSQL_DATABASE: visututor
+      MYSQL_USER: your-username
+      MYSQL_PASSWORD: your-password
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    networks:
+      - my-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=your-elasticsearch-password
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - my-network
+
+volumes:
+  mysql-data:
+  elasticsearch-data:
+
+networks:
+  my-network:
